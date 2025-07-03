@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disculpa Brisa</title>
+    <audio id="musica-fondo" src="resources/musica.mp3" autoplay hidden></audio>
+    <style>
+        /* Scrollbar personalizado */
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(35,36,58,0.3);
+            border-radius: 6px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #7b5fc0 0%, #b6a6f7 100%);
+            border-radius: 6px;
+            border: 2px solid rgba(35,36,58,0.3);
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(180deg, #9575d4 0%, #c4b5f9 100%);
+        }
+        
+        ::-webkit-scrollbar-corner {
+            background: rgba(35,36,58,0.3);
+        }
+
+        /* Para Firefox */
+        html {
+            scrollbar-width: thin;
+            scrollbar-color: #7b5fc0 rgba(35,36,58,0.3);
+        }
+
+        /* Barra de navegación superior */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 54px;
+            background: rgba(35,36,58,0.92);
+            box-shadow: 0 2px 12px #23243a44;
+            display: flex;
+            align-items: center;
+            z-index: 100;
+        }
+        .navbar-list-alt {
+            display: flex;
+            gap: 24px;
+            margin: 0 auto;
+            padding: 0 18px;
+            height: 54px;
+            align-items: center;
+            justify-content: center;
+        }
+        .navbar-link-alt {
+            color: #fffbe9;
+            font-family: 'Segoe Print', 'Comic Sans MS', cursive, sans-serif;
+            font-size: 18px;
+            text-decoration: none;
+            padding: 8px 18px;
+            border-radius: 8px;
+            transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+            background: none;
+            border: none;
+            cursor: pointer;
+            outline: none;
+            box-shadow: none;
+            position: relative;
+            z-index: 2;
+        }
+        .navbar-link-alt.active, .navbar-link-alt:hover {
+            background: #7b5fc0;
+            color: #fff;
+            box-shadow: 0 2px 12px #7b5fc044;
+            text-shadow: 0 1px 6px #b6a6f7cc;
+        }
+        
+        body {
+            padding-top: 54px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            background: radial-gradient(ellipse at 60% 20%, #23243a 60%, #0a0a18 100%);
+        }
+        
+        /* Estrellas */
+        .estrella {
+            position: fixed;
+            border-radius: 50%;
+            background: #fff;
+            opacity: 0.7;
+            z-index: 1;
+            pointer-events: none;
+        }
+        
+        /* Luna */
+        .luna {
+            position: fixed;
+            top: 60px;
+            right: 80px;
+            width: 120px;
+            height: 120px;
+            background: radial-gradient(circle at 60% 40%, #fff 80%, #e3eaff 100%);
+            border-radius: 50%;
+            box-shadow: 0 0 60px 10px #e3eaff, 0 0 0 0 #fff;
+            z-index: 2;
+        }
+        
+        /* Gato animado */
+        .gato-animado {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 3;
+            width: 120px;
+            height: 110px;
+            pointer-events: none;
+        }
+        
+        /* Sombra del gato */
+        .gato-sombra {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 70px;
+            height: 18px;
+            background: radial-gradient(ellipse at center, #222 60%, transparent 100%);
+            opacity: 0.3;
+            border-radius: 50%;
+            z-index: 2;
+        }
+        
+        .carta {
+            max-width: 700px;
+            width: 90vw;
+            background: #fffbe9;
+            border-radius: 18px;
+            box-shadow: 0 4px 24px rgba(123,95,192,0.10);
+            padding: 48px 32px 48px 56px;
+            margin: 40px auto 120px auto;
+            border: 2px solid #b6a6f7;
+            position: relative;
+            font-family: 'Segoe Print', 'Comic Sans MS', cursive, sans-serif;
+        }
+        
+        .carta:before {
+            content: "";
+            position: absolute;
+            left: 36px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #b6a6f7;
+            opacity: 0.5;
+        }
+        
+        .carta-header {
+            font-size: 22px;
+            color: #7b5fc0;
+            margin-bottom: 24px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+        
+        .lista-items {
+            font-size: 18px;
+            color: #444;
+            line-height: 2.2;
+            margin-bottom: 24px;
+        }
+        
+        .item-lista {
+            margin-bottom: 16px;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(182, 166, 247, 0.2);
+            position: relative;
+            animation: fadeIn 0.6s ease-out forwards;
+            opacity: 0;
+        }
+        
+        .item-lista:before {
+            content: "🌙";
+            position: absolute;
+            left: -24px;
+            top: 12px;
+            font-size: 16px;
+            opacity: 0.7;
+        }
+        
+        .item-lista:last-child {
+            border-bottom: none;
+        }
+        
+        .mensaje-final {
+            margin-top: 24px;
+            padding: 20px;
+            background: rgba(123, 95, 192, 0.1);
+            border-radius: 12px;
+            border-left: 4px solid #7b5fc0;
+            color: #444;
+            font-size: 17px;
+            line-height: 1.8;
+        }
+        
+        .carta-footer {
+            text-align: right;
+            color: #7b5fc0;
+            font-size: 18px;
+            margin-top: 32px;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @media (max-width: 700px) {
+            .navbar-list-alt {
+                gap: 8px;
+                padding: 0 2px;
+            }
+            .navbar-link-alt {
+                font-size: 14px;
+                padding: 6px 8px;
+            }
+            .carta {
+                padding: 24px 16px 24px 32px;
+            }
+            .carta-header {
+                font-size: 18px;
+            }
+            .lista-items {
+                font-size: 16px;
+            }
+            .mensaje-final {
+                font-size: 15px;
+                padding: 16px;
+            }
+            .item-lista:before {
+                left: -20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Barra de navegación -->
+    <nav class="navbar">
+        <div class="navbar-list-alt">
+            <a href="subInterfaz.html" class="navbar-link-alt active">Carta</a>
+            <a href="no-le-gusta.html" class="navbar-link-alt">Cosas que no le gustan</a>
+            <a href="imagenes.html" class="navbar-link-alt active">Imágenes random</a>
+            <a href="frases.html" class="navbar-link-alt">Frases que quería decirte</a>
+            <a href="posdata.html" class="navbar-link-alt">Revisa esto porfa</a>
+        </div>
+    </nav>
+
+    <!-- Noche estrellada -->
+    <div id="estrellas-container"></div>
+    <div class="luna"></div>
+    
+
+    <div class="carta">
+        <div class="carta-header">No le gusta:</div>
+        
+        <div class="lista-items">
+            <div class="item-lista">No le gusta la polenta.</div>
+            
+            <div class="item-lista">No le gusta sentirse nerviosa, por eso escucha música para calmarse.</div>
+            
+            <div class="item-lista">No le gusta la gente ruidosa.</div>
+            
+            <div class="item-lista">No le gusta entristecerse porque llora con facilidad, cada vez que estás así ;D me encantaría que me dijeras así puedo escucharte y llamarte para saber que estás bien.</div>
+            
+            <div class="item-lista">No le gusta que le digan "fea" y a veces se siente así, aunque realmente adoro molestarla diciéndole eso, a pesar de ello... es bonita para mí.</div>
+            
+            <div class="item-lista">No le gusta sentirse manipulada.</div>
+            
+            <div class="item-lista">No le gusta ser ignorada o que no respondan a sus comentarios.</div>
+            
+            <div class="item-lista">No le gusta tardar en contestar mensajes, aunque yo te espero hasta que lo hagas, me interesa conocerte, leer qué te pasa en tus días, realmente eres divertida y no quiero que cambies.</div>
+            
+            <div class="item-lista">No le gusta sentirse "una mrd en todo".</div>
+            
+            <div class="item-lista">No le gusta cuando su familia la molesta.</div>
+        </div>
+        
+        <div class="mensaje-final">
+            
+            Tal vez me falten más cosas que no te gusten y debo seguir conocinedote para saberlo, a pesar de ello, sigues adelante con mucha fuerza y mereces todo el cariño y comprensión del mundo. Yo espero seguir ahí contigo para apoyarte y que puedas sentirte mejor, porque realmente eres para mí una persona increíble y valiosa 🙂‍↔️.
+        </div
+        
+       
+    </div>
+
+    <script>
+        // Estrellas fijas
+        function crearEstrellas() {
+            const cont = document.getElementById('estrellas-container');
+            for (let i = 0; i < 80; i++) {
+                const estrella = document.createElement('div');
+                estrella.className = 'estrella';
+                const size = Math.random() * 2.2 + 0.8;
+                estrella.style.width = size + 'px';
+                estrella.style.height = size + 'px';
+                estrella.style.left = (Math.random() * 100) + 'vw';
+                estrella.style.top = (Math.random() * 100) + 'vh';
+                estrella.style.opacity = (Math.random() * 0.5 + 0.5).toFixed(2);
+                cont.appendChild(estrella);
+            }
+        }
+        crearEstrellas();
+        
+       
+        
+        // Animación escalonada de los elementos de la lista
+        function animarLista() {
+            const items = document.querySelectorAll('.item-lista');
+            items.forEach((item, index) => {
+                setTimeout(() => {
+                    item.style.animationDelay = (index * 0.1) + 's';
+                }, index * 100);
+            });
+        }
+        
+        // Ejecutar animación cuando la página carga
+        window.addEventListener('load', animarLista);
+        
+        // Repetir la música al finalizar
+        const audio = document.getElementById('musica-fondo');
+        if (audio) {
+            audio.addEventListener('ended', function() {
+                this.currentTime = 0;
+                this.play();
+            });
+        }
+    </script>
+</body>
+</html>

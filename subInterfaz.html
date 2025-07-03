@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disculpa Brisa</title>
+    <audio id="musica-fondo" src="resources/musica.mp3" autoplay hidden></audio>
+    <style>
+        /* Scrollbar personalizado */
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(35,36,58,0.3);
+            border-radius: 6px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #7b5fc0 0%, #b6a6f7 100%);
+            border-radius: 6px;
+            border: 2px solid rgba(35,36,58,0.3);
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(180deg, #9575d4 0%, #c4b5f9 100%);
+        }
+        
+        ::-webkit-scrollbar-corner {
+            background: rgba(35,36,58,0.3);
+        }
+
+        /* Para Firefox */
+        html {
+            scrollbar-width: thin;
+            scrollbar-color: #7b5fc0 rgba(35,36,58,0.3);
+        }
+
+        /* Barra de navegación superior */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 54px;
+            background: rgba(35,36,58,0.92);
+            box-shadow: 0 2px 12px #23243a44;
+            display: flex;
+            align-items: center;
+            z-index: 100;
+        }
+        .navbar-list {
+            display: flex;
+            gap: 24px;
+            margin: 0 auto;
+            padding: 0;
+            list-style: none;
+        }
+        .navbar-link {
+            color: #fffbe9;
+            font-family: 'Segoe Print', 'Comic Sans MS', cursive, sans-serif;
+            font-size: 18px;
+            text-decoration: none;
+            padding: 8px 18px;
+            border-radius: 8px;
+            transition: background 0.2s, color 0.2s;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+        .navbar-link.active, .navbar-link:hover {
+            background: #7b5fc0;
+            color: #fff;
+        }
+        .contenido-seccion {
+            display: none;
+            background: #fffbe9;
+            border-radius: 0 0 14px 14px;
+            border: 1.5px solid #b6a6f7;
+            border-top: none;
+            box-shadow: 0 2px 12px rgba(123,95,192,0.07);
+            padding: 18px 20px;
+            color: #444;
+            font-size: 16px;
+            margin-top: 18px;
+        }
+        .contenido-seccion.activa {
+            display: block;
+            animation: fadeInSec 0.5s;
+        }
+        body {
+            padding-top: 54px;
+            /* Permitir scroll vertical */
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+        body {
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            background: radial-gradient(ellipse at 60% 20%, #23243a 60%, #0a0a18 100%);
+            /* Remover overflow: hidden para permitir scroll */
+        }
+        /* Estrellas */
+        .estrella {
+            position: fixed;
+            border-radius: 50%;
+            background: #fff;
+            opacity: 0.7;
+            z-index: 1;
+            pointer-events: none;
+        }
+        /* Luna */
+        .luna {
+            position: fixed;
+            top: 60px;
+            right: 80px;
+            width: 120px;
+            height: 120px;
+            background: radial-gradient(circle at 60% 40%, #fff 80%, #e3eaff 100%);
+            border-radius: 50%;
+            box-shadow: 0 0 60px 10px #e3eaff, 0 0 0 0 #fff;
+            z-index: 2;
+        }
+      
+        .carta {
+            max-width: 600px;
+            width: 90vw;
+            background: #fffbe9;
+            border-radius: 18px;
+            box-shadow: 0 4px 24px rgba(123,95,192,0.10);
+            padding: 48px 32px 48px 56px;
+            margin: 40px auto;
+            border: 2px solid #b6a6f7;
+            position: relative;
+            font-family: 'Segoe Print', 'Comic Sans MS', cursive, sans-serif;
+        }
+        .carta:before {
+            content: "";
+            position: absolute;
+            left: 36px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #b6a6f7;
+            opacity: 0.5;
+        }
+        .carta-header {
+            font-size: 22px;
+            color: #7b5fc0;
+            margin-bottom: 24px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+        .carta-body {
+            font-size: 20px;
+            color: #444;
+            margin-bottom: 32px;
+            line-height: 2.1;
+            white-space: pre-line;
+        }
+        .carta-footer {
+            text-align: right;
+            color: #7b5fc0;
+            font-size: 18px;
+            margin-top: 32px;
+        }
+        .fotos-section {
+            width: 100%;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 18px;
+            justify-content: center;
+            margin: 24px 0 0 0;
+        }
+        .foto-placeholder {
+            width: 140px;
+            height: 140px;
+            background: #e3eaff;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #b6a6f7;
+            font-size: 16px;
+            font-style: italic;
+            border: 2px dashed #b6a6f7;
+        }
+        @media (max-width: 600px) {
+            .carta {
+                padding: 18px 6px 18px 24px;
+            }
+            .carta-header {
+                font-size: 16px;
+            }
+            .carta-body {
+                font-size: 15px;
+            }
+            .foto-placeholder {
+                width: 90px;
+                height: 90px;
+                font-size: 11px;
+            }
+        }
+    .decoracion-lateral {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 1;
+    }
+    .decoracion-izq {
+        left: 0;
+    }
+    .decoracion-der {
+        right: 0;
+    }
+    .img-lateral {
+        width: 90px;
+        height: auto;
+        opacity: 0.7;
+        filter: drop-shadow(0 2px 8px #b6a6f7);
+    }
+    .secciones-extra {
+        width: 100%;
+        max-width: 800px;
+        margin: 40px auto 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 28px;
+        z-index: 2;
+        position: relative;
+    }
+    .seccion {
+        background: #fffbe9;
+        border-radius: 14px;
+        border: 1.5px solid #b6a6f7;
+        box-shadow: 0 2px 12px rgba(123,95,192,0.07);
+        padding: 18px 20px;
+    }
+    .seccion h2 {
+        color: #7b5fc0;
+        font-size: 20px;
+        margin-bottom: 8px;
+        font-family: 'Segoe Print', 'Comic Sans MS', cursive, sans-serif;
+    }
+    .contenido-seccion {
+        color: #444;
+        font-size: 16px;
+    }
+    @media (max-width: 900px) {
+        .decoracion-lateral {
+            display: none;
+        }
+    }
+    </style>
+</head>
+
+<body>
+    <!-- Barra de navegación -->
+<nav class="navbar">
+    <div class="navbar-list-alt">
+            <a href="subInterfaz.html" class="navbar-link-alt active">Carta</a>
+            <a href="no-le-gusta.html" class="navbar-link-alt">Cosas que no le gustan</a>
+            <a href="imagenes.html" class="navbar-link-alt active">Imágenes random</a>
+            <a href="frases.html" class="navbar-link-alt">Frases que quería decirte</a>
+            <a href="posdata.html" class="navbar-link-alt">Revisa esto porfa</a>
+    </div>
+</nav>
+<style>
+.navbar-list-alt {
+    display: flex;
+    gap: 24px;
+    margin: 0 auto;
+    padding: 0 18px;
+    height: 54px;
+    align-items: center;
+    justify-content: center;
+}
+.navbar-link-alt {
+    color: #fffbe9;
+    font-family: 'Segoe Print', 'Comic Sans MS', cursive, sans-serif;
+    font-size: 18px;
+    text-decoration: none;
+    padding: 8px 18px;
+    border-radius: 8px;
+    transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+    background: none;
+    border: none;
+    cursor: pointer;
+    outline: none;
+    box-shadow: none;
+    position: relative;
+    z-index: 2;
+}
+.navbar-link-alt.active, .navbar-link-alt:hover {
+    background: #7b5fc0;
+    color: #fff;
+    box-shadow: 0 2px 12px #7b5fc044;
+    text-shadow: 0 1px 6px #b6a6f7cc;
+}
+@media (max-width: 700px) {
+    .navbar-list-alt {
+        gap: 8px;
+        padding: 0 2px;
+    }
+    .navbar-link-alt {
+        font-size: 14px;
+        padding: 6px 8px;
+    }
+}
+</style>
+    <!-- Noche estrellada -->
+    <div id="estrellas-container"></div>
+    <div class="luna"></div>
+    
+    <script>
+    // Estrellas fijas
+    function crearEstrellas() {
+        const cont = document.getElementById('estrellas-container');
+        for (let i = 0; i < 80; i++) {
+            const estrella = document.createElement('div');
+            estrella.className = 'estrella';
+            const size = Math.random() * 2.2 + 0.8;
+            estrella.style.width = size + 'px';
+            estrella.style.height = size + 'px';
+            estrella.style.left = (Math.random() * 100) + 'vw';
+            estrella.style.top = (Math.random() * 100) + 'vh';
+            estrella.style.opacity = (Math.random() * 0.5 + 0.5).toFixed(2);
+            cont.appendChild(estrella);
+        }
+    }
+    crearEstrellas();
+    // Animación de la cola, ojos y el hilo
+    function animarGatoHilo() {
+        const cola = document.getElementById('cola-gato');
+        const hilo = document.getElementById('hilo');
+        const cuerda = document.getElementById('hilo-cuerda');
+        const ojoIzq = document.getElementById('ojo-izq');
+        const ojoDer = document.getElementById('ojo-der');
+        let t = 0;
+        setInterval(() => {
+            t += 0.06;
+            // Cola
+            const qx = 110 + Math.sin(t) * 10;
+            const qy = 100 + Math.cos(t) * 8;
+            const ex = 100 + Math.sin(t) * 4;
+            const ey = 70 + Math.cos(t) * 2;
+            cola.setAttribute('d', `M90 90 Q${qx} ${qy} ${ex} ${ey}`);
+            // Hilo (pelota)
+            const hiloX = 30 + Math.sin(t*1.2) * 8;
+            const hiloY = 100 + Math.cos(t*1.2) * 5;
+            hilo.setAttribute('cx', hiloX);
+            hilo.setAttribute('cy', hiloY);
+            // Cuerda
+            cuerda.setAttribute('d', `M50 90 Q${40 + Math.sin(t*1.2)*4} ${100 + Math.cos(t*1.2)*2} ${hiloX} ${hiloY}`);
+            // Ojos siguen el hilo
+            const ojoOffsetX = (hiloX-60)*0.07;
+            const ojoOffsetY = (hiloY-48)*0.07;
+            ojoIzq.setAttribute('cx', 54 + ojoOffsetX);
+            ojoIzq.setAttribute('cy', 48 + ojoOffsetY);
+            ojoDer.setAttribute('cx', 66 + ojoOffsetX);
+            ojoDer.setAttribute('cy', 48 + ojoOffsetY);
+        }, 40);
+    }
+    animarGatoHilo();
+    </script>
+    <div class="carta">
+        <div class="carta-header">Que tal Brisa?:</div>
+        <div class="carta-body">
+           Yo realmente lamento mis estupideces que hago, se que cometo muchos errores, soy un bobo, pendejo, idiota, tonto, estúpido, imbécil, retrasado, inútil y un montón de cosas más que no puedo decir aquí 
+           porque me alargaria demasiado. Quiero ofrecerte una disculpa sincera por todo lo que he hecho, y espero que puedas perdonarme.Realmente lo siento y  que esta pequeña página te haga sonreír un poco.
+            Te conozco poco, pero en este pequeño tiempo me has demostrado que eres una persona maravillosa, y que te mereces un montón más de cosas. Espero que puedas perdonarme y que podamos seguir siendo amigos ;D.
+           <div class="fotos-section">
+            <div class="foto-placeholder" onclick="ampliarImagen('resources/3ismtfvq.png', 'Te quedo muy wuay ese outfit')">
+                <img src="resources/3ismtfvq.png" alt="Foto especial" style="max-width:100%; max-height:100%; border-radius:10px; cursor:pointer;" />
+            </div>
+            <div class="foto-placeholder" onclick="ampliarImagen('resources/v3125dag.png', 'Tu gata y tu lo mas bonito que he visto :3 ')">
+                <img src="resources/v3125dag.png" alt="Otra foto" style="max-width:100%; max-height:100%; border-radius:10px; cursor:pointer;" />
+            </div>
+        </div>
+        <div id="modal-img" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.7); z-index:1000; justify-content:center; align-items:center; flex-direction:column;">
+            <span onclick="cerrarModal()" style="color:#fff; font-size:32px; position:absolute; top:30px; right:50px; cursor:pointer; font-weight:bold;">&times;</span>
+            <img id="img-ampliada" src="" alt="ampliada" style="max-width:80vw; max-height:70vh; border-radius:18px; box-shadow:0 4px 32px #222; margin-bottom:18px;" />
+            <div id="texto-img" style="color:#fffbe9; font-size:22px; text-align:center; background:rgba(123,95,192,0.7); padding:10px 24px; border-radius:10px; max-width:80vw;"></div>
+        </div>
+        <div class="carta-footer">
+            Con cariño,<br>
+            El corazón de la pulga ;D
+        </div>
+    </div>
+    
+    
+    <script>
+    // Navegación entre secciones
+    function mostrarSeccion(seccionId) {
+        // Ocultar todas las secciones
+        document.querySelectorAll('.contenido-seccion').forEach(seccion => {
+            seccion.classList.remove('activa');
+        });
+        
+        // Mostrar la sección seleccionada
+        document.getElementById(seccionId).classList.add('activa');
+        
+        // Actualizar navegación
+        document.querySelectorAll('.navbar-link').forEach(link => {
+            link.classList.remove('active');
+        });
+        event.target.classList.add('active');
+    }
+    
+    // Repetir la música al finalizar (por compatibilidad extra)
+    const audio = document.getElementById('musica-fondo');
+    if (audio) {
+        audio.addEventListener('ended', function() {
+            this.currentTime = 0;
+            this.play();
+        });
+    }
+    function ampliarImagen(src, texto) {
+        document.getElementById('img-ampliada').src = src;
+        document.getElementById('texto-img').textContent = texto;
+        document.getElementById('modal-img').style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
+    function cerrarModal() {
+        document.getElementById('modal-img').style.display = 'none';
+        document.body.style.overflow = '';
+    }
+    </script>
+    
+    <script>
+    // Loader CSS para animación visual
+    if (!document.getElementById('loader-style')) {
+        const style = document.createElement('style');
+        style.id = 'loader-style';
+        style.innerHTML = `.loader { border: 6px solid #e3eaff; border-top: 6px solid #7b5fc0; border-radius: 50%; width: 44px; height: 44px; animation: spin 1s linear infinite; margin: 0 auto; } @keyframes spin { 0% { transform: rotate(0deg);} 100% { transform: rotate(360deg);} }`;
+        document.head.appendChild(style);
+    }
+    // Animación de descarga y generación de archivo
+    function mostrarAnimacionDescarga() {
+        const anim = document.getElementById('descarga-anim');
+        if (anim) {
+            anim.style.display = 'flex';
+        }
+    }
+    function ocultarAnimacionDescarga() {
+        const anim = document.getElementById('descarga-anim');
+        if (anim) {
+            anim.style.display = 'none';
+        }
+    }
+    function enviarRespuesta(respuesta) {
+        mostrarAnimacionDescarga();
+        setTimeout(() => {
+            const password = 'brisa2025'; // Cambia aquí la contraseña si lo deseas
+            const contenido = 'Este archivo está protegido por contraseña.\n\n' +
+                'Para ver el contenido, ingresa la contraseña en el siguiente sitio: https://www.base64decode.org/\n' +
+                'Contraseña: ' + password + '\n' +
+                'Contenido cifrado (Base64):\n' + btoa('Mi respuesta es: ' + respuesta + '\n\nGenerado desde la carta web.');
+            const blob = new Blob([contenido], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'respuesta_brisa.txt';
+            document.body.appendChild(a);
+            a.click();
+            setTimeout(() => {
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                ocultarAnimacionDescarga();
+            }, 800);
+        }, 900); // Simula tiempo de "generación"
+    }
+    </script>
+
+</body>
+</html>

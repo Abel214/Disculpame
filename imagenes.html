@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Imágenes para Brisa</title>
+    <audio id="musica-fondo" src="resources/musica.mp3" autoplay hidden></audio>
+    <style>
+        /* Scrollbar personalizado */
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(35,36,58,0.3);
+            border-radius: 6px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #7b5fc0 0%, #b6a6f7 100%);
+            border-radius: 6px;
+            border: 2px solid rgba(35,36,58,0.3);
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(180deg, #9575d4 0%, #c4b5f9 100%);
+        }
+        
+        ::-webkit-scrollbar-corner {
+            background: rgba(35,36,58,0.3);
+        }
+
+        /* Para Firefox */
+        html {
+            scrollbar-width: thin;
+            scrollbar-color: #7b5fc0 rgba(35,36,58,0.3);
+        }
+
+        /* Barra de navegación superior */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 54px;
+            background: rgba(35,36,58,0.92);
+            box-shadow: 0 2px 12px #23243a44;
+            display: flex;
+            align-items: center;
+            z-index: 100;
+        }
+        .navbar-list-alt {
+            display: flex;
+            gap: 24px;
+            margin: 0 auto;
+            padding: 0 18px;
+            height: 54px;
+            align-items: center;
+            justify-content: center;
+        }
+        .navbar-link-alt {
+            color: #fffbe9;
+            font-family: 'Segoe Print', 'Comic Sans MS', cursive, sans-serif;
+            font-size: 18px;
+            text-decoration: none;
+            padding: 8px 18px;
+            border-radius: 8px;
+            transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+            background: none;
+            border: none;
+            cursor: pointer;
+            outline: none;
+            box-shadow: none;
+            position: relative;
+            z-index: 2;
+        }
+        .navbar-link-alt.active, .navbar-link-alt:hover {
+            background: #7b5fc0;
+            color: #fff;
+            box-shadow: 0 2px 12px #7b5fc044;
+            text-shadow: 0 1px 6px #b6a6f7cc;
+        }
+        
+        body {
+            padding-top: 54px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            background: radial-gradient(ellipse at 60% 20%, #23243a 60%, #0a0a18 100%);
+        }
+        
+        /* Estrellas */
+        .estrella {
+            position: fixed;
+            border-radius: 50%;
+            background: #fff;
+            opacity: 0.7;
+            z-index: 1;
+            pointer-events: none;
+        }
+        
+        /* Luna */
+        .luna {
+            position: fixed;
+            top: 60px;
+            right: 80px;
+            width: 120px;
+            height: 120px;
+            background: radial-gradient(circle at 60% 40%, #fff 80%, #e3eaff 100%);
+            border-radius: 50%;
+            box-shadow: 0 0 60px 10px #e3eaff, 0 0 0 0 #fff;
+            z-index: 2;
+        }
+        
+        /* Gato animado */
+        .gato-animado {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 3;
+            width: 120px;
+            height: 110px;
+            pointer-events: none;
+        }
+        
+        /* Sombra del gato */
+        .gato-sombra {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 70px;
+            height: 18px;
+            background: radial-gradient(ellipse at center, #222 60%, transparent 100%);
+            opacity: 0.3;
+            border-radius: 50%;
+            z-index: 2;
+        }
+        
+        .contenido-principal {
+            max-width: 900px;
+            width: 90vw;
+            margin: 40px auto 120px auto;
+            position: relative;
+            z-index: 4;
+        }
+        
+        .titulo-seccion {
+            background: #fffbe9;
+            border-radius: 18px 18px 0 0;
+            box-shadow: 0 4px 24px rgba(123,95,192,0.10);
+            padding: 24px 32px;
+            border: 2px solid #b6a6f7;
+            border-bottom: none;
+            font-family: 'Segoe Print', 'Comic Sans MS', cursive, sans-serif;
+            font-size: 24px;
+            color: #7b5fc0;
+            text-align: center;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+        
+        .seccion-imagenes {
+            background: #fffbe9;
+            border-radius: 0 0 18px 18px;
+            box-shadow: 0 4px 24px rgba(123,95,192,0.10);
+            padding: 32px;
+            border: 2px solid #b6a6f7;
+            border-top: none;
+            margin-bottom: 32px;
+        }
+        
+        .subtitulo-seccion {
+            font-family: 'Segoe Print', 'Comic Sans MS', cursive, sans-serif;
+            font-size: 20px;
+            color: #7b5fc0;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .fotos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 32px;
+        }
+        
+        .foto-container {
+            position: relative;
+            background: #f8f5ff;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 16px rgba(123,95,192,0.15);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 2px solid #e3eaff;
+        }
+        
+        .foto-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(123,95,192,0.25);
+        }
+        
+        .foto-placeholder {
+            width: 100%;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .foto-placeholder img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        
+        .foto-placeholder:hover img {
+            transform: scale(1.05);
+        }
+        
+        .foto-descripcion {
+            padding: 16px;
+            background: rgba(123,95,192,0.05);
+            font-family: 'Segoe Print', 'Comic Sans MS', cursive, sans-serif;
+            font-size: 14px;
+            color: #555;
+            text-align: center;
+            line-height: 1.4;
+        }
+        
+        .mensaje-especial {
+            background: rgba(123,95,192,0.1);
+            border-radius: 12px;
+            padding: 24px;
+            margin: 24px 0;
+            border-left: 4px solid #7b5fc0;
+            font-family: 'Segoe Print', 'Comic Sans MS', cursive, sans-serif;
+            font-size: 16px;
+            color: #444;
+            line-height: 1.6;
+            text-align: center;
+        }
+        
+        /* Modal para ampliar imágenes */
+        .modal-img {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            backdrop-filter: blur(5px);
+        }
+        
+        .modal-close {
+            color: #fff;
+            font-size: 32px;
+            position: absolute;
+            top: 30px;
+            right: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            z-index: 1001;
+            transition: color 0.2s;
+        }
+        
+        .modal-close:hover {
+            color: #b6a6f7;
+        }
+        
+        .modal-img-container {
+            max-width: 80vw;
+            max-height: 70vh;
+            border-radius: 18px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+            margin-bottom: 18px;
+            overflow: hidden;
+        }
+        
+        .modal-img-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        
+        .modal-texto {
+            color: #fffbe9;
+            font-size: 22px;
+            text-align: center;
+            background: rgba(123,95,192,0.8);
+            padding: 16px 24px;
+            border-radius: 12px;
+            max-width: 80vw;
+            font-family: 'Segoe Print', 'Comic Sans MS', cursive, sans-serif;
+            backdrop-filter: blur(10px);
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .foto-container {
+            animation: fadeIn 0.6s ease-out forwards;
+            opacity: 0;
+        }
+        
+        @media (max-width: 700px) {
+            .navbar-list-alt {
+                gap: 8px;
+                padding: 0 2px;
+            }
+            .navbar-link-alt {
+                font-size: 14px;
+                padding: 6px 8px;
+            }
+            .contenido-principal {
+                width: 95vw;
+            }
+            .titulo-seccion {
+                font-size: 20px;
+                padding: 20px 16px;
+            }
+            .seccion-imagenes {
+                padding: 20px 16px;
+            }
+            .fotos-grid {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                gap: 16px;
+            }
+            .foto-placeholder {
+                height: 150px;
+            }
+            .modal-close {
+                top: 20px;
+                right: 20px;
+                font-size: 28px;
+            }
+            .modal-texto {
+                font-size: 18px;
+                padding: 12px 16px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Barra de navegación -->
+    <nav class="navbar">
+        <div class="navbar-list-alt">
+            <a href="subInterfaz.html" class="navbar-link-alt active">Carta</a>
+            <a href="no-le-gusta.html" class="navbar-link-alt">Cosas que no le gustan</a>
+            <a href="imagenes.html" class="navbar-link-alt active">Imágenes random</a>
+            <a href="frases.html" class="navbar-link-alt">Frases que quería decirte</a>
+            <a href="posdata.html" class="navbar-link-alt">Revisa esto porfa</a>
+        </div>
+    </nav>
+
+    <!-- Noche estrellada -->
+    <div id="estrellas-container"></div>
+    <div class="luna"></div>
+    <div class="gato-animado">
+        <svg width="120" height="110" viewBox="0 0 120 110" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Cuerpo -->
+            <ellipse cx="60" cy="90" rx="38" ry="18" fill="#22223a"/>
+            <ellipse cx="60" cy="70" rx="28" ry="28" fill="#2d2d44"/>
+            <!-- Cabeza -->
+            <ellipse cx="60" cy="45" rx="18" ry="18" fill="#2d2d44"/>
+            <!-- Orejas -->
+            <polygon points="48,32 54,10 60,32" fill="#2d2d44"/>
+            <polygon points="72,32 66,10 60,32" fill="#2d2d44"/>
+            <!-- Ojos -->
+            <ellipse class="ojo-gato" cx="54" cy="48" rx="2.5" ry="4" fill="#fff"/>
+            <ellipse class="ojo-gato" cx="66" cy="48" rx="2.5" ry="4" fill="#fff"/>
+            <!-- Cola animada -->
+            <path id="cola-gato" d="M90 90 Q110 100 100 70" stroke="#2d2d44" stroke-width="7" fill="none"/>
+        </svg>
+        <div class="gato-sombra"></div>
+    </div>
+
+    <div class="contenido-principal">
+        <div class="titulo-seccion">
+            Imágenes tuyas y algunas de por ahí jejej ✨
+        </div>
+        
+        <div class="seccion-imagenes">
+            <div class="subtitulo-seccion">Momentos especiales</div>
+            
+            <div class="fotos-grid">
+                <div class="foto-container">
+                    <div class="foto-placeholder" onclick="ampliarImagen('resources/IMG-20250701-WA0011.jpg', 'Jjaja relamente me muero de risa')">
+                        <img src="resources/IMG-20250701-WA0011.jpg" alt="Foto especial" />
+                    </div>
+                    <div class="foto-descripcion">
+                        No necesito palabras para explicar el porque de esta imagen
+                    </div>
+                </div>
+                
+                <div class="foto-container">
+                    <div class="foto-placeholder" onclick="ampliarImagen('resources/IMG-20250701-WA0113.jpg', 'Ojito el outfit')">
+                        <img src="resources/IMG-20250701-WA0113.jpg" alt="Otra foto" />
+                    </div>
+                    <div class="foto-descripcion">
+                        Y dices que no eres bonita...no es asi
+                    </div>
+                </div>
+                
+                <div class="foto-container">
+                    <div class="foto-placeholder" onclick="ampliarImagen('resources/image1.jpg', 'Me perdonas🥺')">
+                        <img src="resources/image1.jpg" alt="Sonrisa" />
+                    </div>
+                    <div class="foto-descripcion">
+                        Me peldonas?
+                    </div>
+                </div>
+                
+                <div class="foto-container">
+                    <div class="foto-placeholder" onclick="ampliarImagen('resources/images.jpg', 'Ojito')">
+                        <img src="resources/images.jpg" alt="Momento natural" />
+                    </div>
+                    <div class="foto-descripcion">
+                        Adivina quien debe esto ;D
+                    </div>
+                </div>
+            </div>
+            
+            
+
+    <!-- Modal para ampliar imágenes -->
+    <div id="modal-img" class="modal-img">
+        <span class="modal-close" onclick="cerrarModal()">&times;</span>
+        <div class="modal-img-container">
+            <img id="img-ampliada" src="" alt="ampliada" />
+        </div>
+        <div id="texto-img" class="modal-texto"></div>
+    </div>
+
+    <script>
+        // Estrellas fijas
+        function crearEstrellas() {
+            const cont = document.getElementById('estrellas-container');
+            for (let i = 0; i < 80; i++) {
+                const estrella = document.createElement('div');
+                estrella.className = 'estrella';
+                const size = Math.random() * 2.2 + 0.8;
+                estrella.style.width = size + 'px';
+                estrella.style.height = size + 'px';
+                estrella.style.left = (Math.random() * 100) + 'vw';
+                estrella.style.top = (Math.random() * 100) + 'vh';
+                estrella.style.opacity = (Math.random() * 0.5 + 0.5).toFixed(2);
+                cont.appendChild(estrella);
+            }
+        }
+        crearEstrellas();
+        
+        // Animación simple de la cola del gato
+        function animarCola() {
+            const cola = document.getElementById('cola-gato');
+            let t = 0;
+            setInterval(() => {
+                t += 0.08;
+                const qx = 110 + Math.sin(t) * 10;
+                const qy = 100 + Math.cos(t) * 8;
+                const ex = 100 + Math.sin(t) * 4;
+                const ey = 70 + Math.cos(t) * 2;
+                cola.setAttribute('d', `M90 90 Q${qx} ${qy} ${ex} ${ey}`);
+            }, 40);
+        }
+        animarCola();
+        
+        // Funciones para el modal de imágenes
+        function ampliarImagen(src, texto) {
+            document.getElementById('img-ampliada').src = src;
+            document.getElementById('texto-img').textContent = texto;
+            document.getElementById('modal-img').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function cerrarModal() {
+            document.getElementById('modal-img').style.display = 'none';
+            document.body.style.overflow = '';
+        }
+        
+        // Cerrar modal con tecla Escape
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                cerrarModal();
+            }
+        });
+        
+        // Animación escalonada de las fotos
+        function animarFotos() {
+            const fotos = document.querySelectorAll('.foto-container');
+            fotos.forEach((foto, index) => {
+                setTimeout(() => {
+                    foto.style.animationDelay = (index * 0.1) + 's';
+                }, index * 100);
+            });
+        }
+        
+        // Ejecutar animación cuando la página carga
+        window.addEventListener('load', animarFotos);
+        
+        // Repetir la música al finalizar
+        const audio = document.getElementById('musica-fondo');
+        if (audio) {
+            audio.addEventListener('ended', function() {
+                this.currentTime = 0;
+                this.play();
+            });
+        }
+    </script>
+</body>
+</html>

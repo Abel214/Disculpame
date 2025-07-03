@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frases</title>
+    <link rel="stylesheet" href="style.css">
+        <audio id="musica-fondo" src="resources/musica.mp3" autoplay hidden></audio>
+    <style>
+        body {
+            padding-top: 54px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            background: radial-gradient(ellipse at 60% 20%, #23243a 60%, #0a0a18 100%);
+        }
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 54px;
+            background: rgba(35,36,58,0.92);
+            box-shadow: 0 2px 12px #23243a44;
+            display: flex;
+            align-items: center;
+            z-index: 100;
+        }
+        .navbar-list-alt {
+            display: flex;
+            gap: 24px;
+            margin: 0 auto;
+            padding: 0 18px;
+            height: 54px;
+            align-items: center;
+            justify-content: center;
+        }
+        .navbar-link-alt {
+            color: #fffbe9;
+            font-family: 'Segoe Print', 'Comic Sans MS', cursive, sans-serif;
+            font-size: 18px;
+            text-decoration: none;
+            padding: 8px 18px;
+            border-radius: 8px;
+            transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+            background: none;
+            border: none;
+            cursor: pointer;
+            outline: none;
+            box-shadow: none;
+            position: relative;
+            z-index: 2;
+        }
+        .navbar-link-alt.active, .navbar-link-alt:hover {
+            background: #7b5fc0;
+            color: #fff;
+            box-shadow: 0 2px 12px #7b5fc044;
+            text-shadow: 0 1px 6px #b6a6f7cc;
+        }
+        .luna {
+            position: fixed;
+            top: 60px;
+            right: 80px;
+            width: 120px;
+            height: 120px;
+            background: radial-gradient(circle at 60% 40%, #fff 80%, #e3eaff 100%);
+            border-radius: 50%;
+            box-shadow: 0 0 60px 10px #e3eaff, 0 0 0 0 #fff;
+            z-index: 2;
+        }
+        .gato-animado {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 3;
+            width: 120px;
+            height: 110px;
+            pointer-events: none;
+        }
+        .gato-sombra {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 70px;
+            height: 18px;
+            background: radial-gradient(ellipse at center, #222 60%, transparent 100%);
+            opacity: 0.3;
+            border-radius: 50%;
+            z-index: 2;
+        }
+        .estrella {
+            position: fixed;
+            border-radius: 50%;
+            background: #fff;
+            opacity: 0.7;
+            z-index: 1;
+            pointer-events: none;
+        }
+        .carta {
+            max-width: 700px;
+            width: 90vw;
+            background: #fffbe9;
+            border-radius: 18px;
+            box-shadow: 0 4px 24px rgba(123,95,192,0.10);
+            padding: 48px 32px 48px 56px;
+            margin: 40px auto 120px auto;
+            border: 2px solid #b6a6f7;
+            position: relative;
+            font-family: 'Segoe Print', 'Comic Sans MS', cursive, sans-serif;
+        }
+        .carta:before {
+            content: "";
+            position: absolute;
+            left: 36px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #b6a6f7;
+            opacity: 0.5;
+        }
+        .carta-header {
+            font-size: 22px;
+            color: #7b5fc0;
+            margin-bottom: 24px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+        .lista-frases {
+            font-size: 18px;
+            color: #444;
+            line-height: 2.2;
+            margin-bottom: 24px;
+            list-style: disc inside;
+        }
+        .frase-item {
+            margin-bottom: 16px;
+            padding: 12px 0 12px 8px;
+            border-bottom: 1px solid rgba(182, 166, 247, 0.2);
+            position: relative;
+            animation: fadeIn 0.6s ease-out forwards;
+            opacity: 0;
+        }
+        .frase-item:before {
+            content: "✨";
+            position: absolute;
+            left: -24px;
+            top: 12px;
+            font-size: 16px;
+            opacity: 0.7;
+        }
+        .frase-item:last-child {
+            border-bottom: none;
+        }
+        .mensaje-final {
+            margin-top: 24px;
+            padding: 20px;
+            background: rgba(123, 95, 192, 0.1);
+            border-radius: 12px;
+            border-left: 4px solid #7b5fc0;
+            color: #444;
+            font-size: 17px;
+            line-height: 1.8;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @media (max-width: 700px) {
+            .navbar-list-alt {
+                gap: 8px;
+                padding: 0 2px;
+            }
+            .navbar-link-alt {
+                font-size: 14px;
+                padding: 6px 8px;
+            }
+            .carta {
+                padding: 24px 16px 24px 32px;
+            }
+            .carta-header {
+                font-size: 18px;
+            }
+            .lista-frases {
+                font-size: 16px;
+            }
+            .mensaje-final {
+                font-size: 15px;
+                padding: 16px;
+            }
+            .frase-item:before {
+                left: -20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Barra de navegación -->
+    <nav class="navbar">
+        <div class="navbar-list-alt">
+            <a href="subInterfaz.html" class="navbar-link-alt active">Carta</a>
+            <a href="no-le-gusta.html" class="navbar-link-alt">Cosas que no le gustan</a>
+            <a href="imagenes.html" class="navbar-link-alt active">Imágenes random</a>
+            <a href="frases.html" class="navbar-link-alt">Frases que quería decirte</a>
+            <a href="posdata.html" class="navbar-link-alt">Revisa esto porfa</a>
+        </div>
+    </nav>
+    <!-- Noche estrellada -->
+    <div id="estrellas-container"></div>
+    <div class="luna"></div>
+    
+    <div class="carta">
+        <div class="carta-header">Frases que quería decirte:</div>
+        <div class="lista-frases">
+            <div class="frase-item">“No importa cuántas veces caigas, siempre estaré aquí para ayudarte a levantarte.”</div>
+            <div class="frase-item">“Eres mucho más fuerte y valiosa de lo que crees.”</div>
+            <div class="frase-item">“Me encanta poder compartir momentos contigo, incluso los difíciles.”</div>
+            <div class="frase-item">“No tienes que ser perfecta para ser increíble.”</div>
+            <div class="frase-item">“Gracias por confiar en mí, aunque a veces no sepa cómo ayudarte 🫠 espero mejorar demasiado en ese sentido.”</div>
+            <div class="frase-item">“Siempre puedes contar conmigo, incluso cuando sientas que el mundo te da la espalda.”</div>
+            <div class="frase-item">“Me importas mucho, y quiero que lo recuerdes cada día.”</div>
+            <div class="frase-item">“No dejes que nadie apague tu luz, ni siquiera tú misma.”</div>
+            <div class="frase-item">“Si algún día dudas de ti, aquí estaré para recordarte lo especial que eres.”</div>
+            <div class="frase-item">“Perdón por mis errores, y gracias por darme la oportunidad de aprender contigo.”</div>
+        </div>
+>
+    </div>
+    <script>
+        // Estrellas fijas
+        function crearEstrellas() {
+            const cont = document.getElementById('estrellas-container');
+            for (let i = 0; i < 80; i++) {
+                const estrella = document.createElement('div');
+                estrella.className = 'estrella';
+                const size = Math.random() * 2.2 + 0.8;
+                estrella.style.width = size + 'px';
+                estrella.style.height = size + 'px';
+                estrella.style.left = (Math.random() * 100) + 'vw';
+                estrella.style.top = (Math.random() * 100) + 'vh';
+                estrella.style.opacity = (Math.random() * 0.5 + 0.5).toFixed(2);
+                cont.appendChild(estrella);
+            }
+        }
+        crearEstrellas();
+        // Animación simple de la cola del gato
+        function animarCola() {
+            const cola = document.getElementById('cola-gato');
+            let t = 0;
+            setInterval(() => {
+                t += 0.08;
+                const qx = 110 + Math.sin(t) * 10;
+                const qy = 100 + Math.cos(t) * 8;
+                const ex = 100 + Math.sin(t) * 4;
+                const ey = 70 + Math.cos(t) * 2;
+                cola.setAttribute('d', `M90 90 Q${qx} ${qy} ${ex} ${ey}`);
+            }, 40);
+        }
+        animarCola();
+        // Animación escalonada de los elementos de la lista
+        function animarLista() {
+            const items = document.querySelectorAll('.frase-item');
+            items.forEach((item, index) => {
+                setTimeout(() => {
+                    item.style.animationDelay = (index * 0.1) + 's';
+                }, index * 100);
+            });
+        }
+        window.addEventListener('load', animarLista);
+    </script>
+</body>
+</html>
